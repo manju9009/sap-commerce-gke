@@ -1,0 +1,63 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: hybris-stateful-hac
+  labels:
+    app: hybris
+    type: hac
+spec:
+  serviceName: hybris-service
+  replicas: 1
+  selector:
+    matchLabels:
+      app: hybris
+  template:
+    metadata:
+      labels:
+        app: hybris
+        type: hac
+    spec:
+      containers:
+      - name: hybris-hac
+        image: hybris-platform
+        args: ["onlyHac"]
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8081
+        - containerPort: 8088
+        env:
+        - name: DB_URL
+          valueFrom:
+            configMapKeyRef:
+              name: hybris-configmap
+              key: DB_URL
+        - name: SOLR_CONFIG_DEFAULT_URLS
+          valueFrom:
+            configMapKeyRef:
+              name: hybris-configmap
+              key: SOLR_CONFIG_DEFAULT_URLS
+        - name: CATALINA_MEMORY_OPTS
+          valueFrom:
+            configMapKeyRef:
+              name: hybris-configmap
+              key: CATALINA_MEMORY_OPTS
+        volumeMounts:
+        - name: hybris-cluster-storage
+          mountPath: "/opt/hybris/data/media"
+          subPath: media
+        - name: certs
+          mountPath: "/etc/ssl/certs/hybris"
+      imagePullSecrets:
+      - name: regcred
+      volumes:
+      - name: certs
+        secret:
+          secretName: hybris-https
+  volumeClaimTemplates:
+  - metadata:
+      name: hybris-cluster-storage
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: 2Gi

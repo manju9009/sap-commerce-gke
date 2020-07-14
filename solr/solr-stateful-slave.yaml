@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: solr-stateful-slave
+  labels:
+    app: solr
+    type: slave
+spec:
+  serviceName: solr-slave
+  replicas: 1
+  selector:
+    matchLabels:
+      app: solr
+  template:
+    metadata:
+      labels:
+        app: solr
+        type: slave
+    spec:
+      containers:
+      - name: solr
+        image: manjuts/manju-repo:hybris-solr
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8983
+        envFrom:
+        - configMapRef:
+            name: solr-configmap-slave

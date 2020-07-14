@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: hsql-stateful
+  labels:
+    app: hsql
+spec:
+  serviceName: hsql-service
+  replicas: 1
+  selector:
+    matchLabels:
+      app: hsql
+  template:
+    metadata:
+      labels:
+        app: hsql
+    spec:
+      containers:
+      - name: hsql
+        image: manjuts/manju-repo:hybris-hsql
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 9090
+        volumeMounts:
+        - name: hsql-cluster-storage
+          mountPath: "/opt/hsqldb/data"
+      imagePullSecrets:
+      - name: regcred
+  volumeClaimTemplates:
+  - metadata:
+      name: hsql-cluster-storage
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: 1Gi

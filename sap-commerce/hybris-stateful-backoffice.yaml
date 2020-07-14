@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: hybris-stateful-backoffice
+  labels:
+    app: hybris
+    type: backoffice
+spec:
+  serviceName: hybris-service
+  replicas: 1
+  selector:
+    matchLabels:
+      app: hybris
+  template:
+    metadata:
+      labels:
+        app: hybris
+        type: platform
+    spec:
+      containers:
+      - name: hybris-backoffice
+        image: hybris-platform
+        args: ["onlyBackoffice"]
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8081
+        - containerPort: 8088
+        env:
+        - name: DB_URL
+          value: 'jdbc:hsqldb:hsql://hsql-service:9090/hybris;hsqldb.tx=MVCC'
+        - name: SOLR_CONFIG_DEFAULT_URLS
+          value: 'http://solr-master:8983/solr,http://solr-slave:8983/solr'
+        - name: CATALINA_MEMORY_OPTS
+          value: "-Xms6G -Xmx6G"
+        volumeMounts:
+        - name: hybris-cluster-storage
+          mountPath: "/opt/hybris/data/media"
+          subPath: media
+        - name: certs
+          mountPath: "/etc/ssl/certs/hybris"
+      imagePullSecrets:
+      - name: regcred
+      volumes:
+      - name: certs
+        secret:
+          secretName: hybris-https
+  volumeClaimTemplates:
+  - metadata:
+      name: hybris-cluster-storage
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: 2Gi

@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: hybris-stateful-occ
+  labels:
+    app: hybris
+    type: occ
+spec:
+  serviceName: hybris-service
+  replicas: 1
+  selector:
+    matchLabels:
+      app: hybris
+  template:
+    metadata:
+      labels:
+        app: hybris
+        type: occ
+    spec:
+      containers:
+      - name: hybris-occ
+        image: hybris-platform
+        args: ["onlyOCC"]
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8081
+        - containerPort: 8088
+        envFrom:
+        - configMapRef:
+            name: hybris-configmap
+        volumeMounts:
+        - name: hybris-cluster-storage
+          mountPath: "/opt/hybris/data/media"
+          subPath: media
+        - name: certs
+          mountPath: "/etc/ssl/certs/hybris"
+      imagePullSecrets:
+      - name: regcred
+      volumes:
+      - name: certs
+        secret:
+          secretName: hybris-https
+  volumeClaimTemplates:
+  - metadata:
+      name: hybris-cluster-storage
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: 2Gi

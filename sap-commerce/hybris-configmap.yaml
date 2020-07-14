@@ -1,0 +1,8 @@
+apiVersion: v1
+data:
+  DB_URL: 'jdbc:hsqldb:hsql://hsql-service:9090/hybris;hsqldb.tx=MVCC'
+  SOLR_CONFIG_DEFAULT_URLS: 'http://solr-master:8983/solr,http://solr-slave:8983/solr'
+  CATALINA_MEMORY_OPTS: '-Xms6G -Xmx6G'
+kind: ConfigMap
+metadata:
+  name: hybris-configmap

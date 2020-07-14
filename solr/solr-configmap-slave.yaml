@@ -1,0 +1,9 @@
+apiVersion: v1
+data:
+  CLUSTER: 'true'
+  MASTER: 'false'
+  SOLR_MASTER_HOST: 'solr-master'
+  SOLR_MASTER_PORT: '8983'
+kind: ConfigMap
+metadata:
+  name: solr-configmap-slave

@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: hybris-service
+  labels:
+    app: hybris
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 8081
+    targetPort: 8081
+    name: http
+  - port: 8088
+    targetPort: 8088
+    name: https
+  selector:
+    app: hybris

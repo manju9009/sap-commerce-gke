@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: solr-stateful-master
+  labels:
+    app: solr
+    type: master
+spec:
+  serviceName: solr-master
+  replicas: 1
+  selector:
+    matchLabels:
+      app: solr
+  template:
+    metadata:
+      labels:
+        app: solr
+        type: master
+    spec:
+      containers:
+      - name: solr
+        image: manjuts/manju-repo:hybris-solr
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8983
+        envFrom:
+        - configMapRef:
+            name: solr-configmap-master

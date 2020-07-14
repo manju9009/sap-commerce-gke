@@ -1,0 +1,7 @@
+apiVersion: v1
+data:
+  CLUSTER: 'true'
+  MASTER: 'true'
+kind: ConfigMap
+metadata:
+  name: solr-configmap-master
