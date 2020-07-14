@@ -1,6 +1,6 @@
 #!/bin/sh
 
-export PROJECT_NAME=${1:-valtech-sapcommerce}
+export PROJECT_NAME=${1:-manju-sapcommerce}
 export PROJECT=$(gcloud config get-value project)
 export ZONE=us-east4-a
 
