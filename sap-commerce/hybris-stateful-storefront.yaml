@@ -19,7 +19,7 @@ spec:
     spec:
       containers:
       - name: hybris-storefront
-        image: hybris-platform
+        image: manjuts/manju-repo:hybris-platform
         args: ["default"]
         imagePullPolicy: Always
         ports:

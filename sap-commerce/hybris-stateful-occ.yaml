@@ -19,7 +19,7 @@ spec:
     spec:
       containers:
       - name: hybris-occ
-        image: hybris-platform
+        image: manjuts/manju-repo:hybris-platform
         args: ["onlyOCC"]
         imagePullPolicy: Always
         ports:

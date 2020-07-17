@@ -19,7 +19,7 @@ spec:
     spec:
       containers:
       - name: hybris-platform
-        image: hybris-platform
+        image: manjuts/manju-repo:hybris-platform
         args: ["admin", "initialize -Dadmin.password=nimda"]
         imagePullPolicy: Always
         ports:
